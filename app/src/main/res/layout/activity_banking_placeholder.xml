@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_brown">
+
+    <!-- Header with pixel-retro styling -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pixel_game"
+            android:text="Banking"
+            android:textAlignment="center"
+            android:textColor="@color/secondary"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+            
+        <!-- Profile Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp">
+            
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                
+                <!-- Profile Image -->
+                <ImageView
+                    android:id="@+id/imgProfilePicture"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/edit_profile"
+                    android:background="@drawable/pixel_circle_background"
+                    android:scaleType="centerCrop"
+                    android:padding="4dp" />
+                
+                <!-- Edit Button Overlay -->
+                <ImageView
+                    android:id="@+id/btnEditProfile"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/edit_profile"
+                    android:background="@drawable/pixel_small_circle_background"
+                    android:layout_gravity="bottom|end"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="2dp" />
+                    
+            </FrameLayout>
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+                
+                <TextView
+                    android:id="@+id/tvProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Profile"
+                    android:textColor="@color/secondary"
+                    android:fontFamily="@font/pixel_game"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+                    
+                <TextView
+                    android:id="@+id/tvProfileSubtext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to edit profile picture"
+                    android:textColor="@color/secondary"
+                    android:fontFamily="@font/pixel_game"
+                    android:textSize="12sp"
+                    android:alpha="0.8" />
+                    
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+
+    <!-- Cards list section -->
+    <TextView
+        android:id="@+id/tvCardsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Your Cards"
+        android:textColor="@color/primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
+
+    <!-- RecyclerView for cards -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCards"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@id/btnAddCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCardsHeader"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_bank_card" />
+
+    <!-- Empty state view -->
+    <LinearLayout
+        android:id="@+id/emptyStateView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btnAddCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCardsHeader">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/pixel_game"
+            android:text="No Cards Added Yet"
+            android:textColor="@color/primary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/pixel_game"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Add your first card to start tracking spending limits"
+            android:textColor="@color/primary"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Add card button with pixel-retro styling -->
+    <Button
+        android:id="@+id/btnAddCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@color/primary"
+        android:fontFamily="@font/pixel_game"
+        android:text="Add New Card"
+        android:textColor="@color/secondary"
+        app:layout_constraintBottom_toTopOf="@id/navigationBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Navigation Bar -->
+    <include
+        android:id="@+id/navigationBar"
+        layout="@layout/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Coming Soon elements (initially invisible) -->
+    <ImageView
+        android:id="@+id/imgComingSoon"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/banking"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/tvComingSoon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Coming Soon!"
+        android:textColor="@color/primary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgComingSoon" />
+
+    <!-- Loading indicator -->
+    <ProgressBar
+        android:id="@+id/loadingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

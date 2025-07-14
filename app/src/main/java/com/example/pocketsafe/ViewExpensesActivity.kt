@@ -1,0 +1,652 @@
+package com.example.pocketsafe
+
+import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.example.pocketsafe.ui.activity.BaseActivity
+import com.example.pocketsafe.ui.MainMenu
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.firstOrNull
+import androidx.core.content.res.ResourcesCompat // For backward-compatible font loading
+import com.example.pocketsafe.data.Expense
+import com.example.pocketsafe.data.Category
+import com.example.pocketsafe.data.AppDatabase
+import com.example.pocketsafe.firebase.FirebaseService
+import java.text.SimpleDateFormat
+import java.util.*
+import com.example.pocketsafe.MainApplication
+
+class ViewExpensesActivity : AppCompatActivity() {
+    private lateinit var db: AppDatabase
+    private lateinit var expensesLayout: LinearLayout
+    private lateinit var categorySpinner: Spinner
+    private lateinit var selectedCategoryLabel: TextView
+    private lateinit var startDateEditText: TextView
+    private lateinit var endDateEditText: TextView
+    private lateinit var filterButton: Button
+    private lateinit var totalAmountTextView: TextView
+    private var startDate: Date? = null
+    private var endDate: Date? = null
+    private var categories: List<Category> = emptyList()
+    private val TAG = "ViewExpensesActivity"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_expense)
+
+        // Apply pixel-retro theme styling with brown background
+        window.decorView.setBackgroundColor(Color.parseColor("#5b3f2c"))
+
+        // Use standard navigation setup - we'll implement custom navigation later
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setBackgroundDrawable(GradientDrawable().apply {
+            setColor(Color.parseColor("#5b3f2c"))
+        })
+
+        // Get database instance from MainApplication singleton
+        try {
+            db = MainApplication.getDatabase(applicationContext)
+            Log.d(TAG, "Database initialized successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error initializing database: ${e.message}")
+            Toast.makeText(this, "Error initializing database: ${e.message}", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
+        val mainLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+            setPadding(30, 30, 30, 30)
+        }
+
+        val backButton = Button(this).apply {
+            text = "Back to Main Menu"
+            setPadding(40, 40, 40, 40)
+
+            val drawable = GradientDrawable()
+            drawable.shape = GradientDrawable.OVAL
+            drawable.setColor(Color.parseColor("#D2B48C"))
+            background = drawable
+
+            setOnClickListener {
+                val intent = Intent(this@ViewExpensesActivity, MainMenu::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
+
+        val layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            topMargin = 100
+            leftMargin = 40
+        }
+
+        mainLayout.addView(backButton, layoutParams)
+
+        val space = View(this).apply {
+            setLayoutParams(LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 20))
+        }
+        mainLayout.addView(space)
+        setupCategorySpinner(mainLayout)
+        setupDateRangeFilter(mainLayout)
+        setupFilterButton(mainLayout)
+        setupTotalAmountView(mainLayout)
+        setupExpensesScrollView(mainLayout)
+
+        setContentView(mainLayout)
+
+        loadCategories()
+
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedCategory = categorySpinner.selectedItem as? Category
+                if (selectedCategory != null) {
+                    selectedCategoryLabel.text = "Showing Expenses for: ${selectedCategory.name}"
+                    loadExpenses(selectedCategory.id)
+                }
+                selectedCategoryLabel.setTextColor(Color.parseColor("#f3c34e"))
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun setupCategorySpinner(mainLayout: LinearLayout) {
+        val spinnerLabel = TextView(this).apply {
+            text = ""
+            textSize = 20f
+            setPadding(0, 0, 0, 10)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+        }
+        mainLayout.addView(spinnerLabel)
+
+        categorySpinner = Spinner(this)
+        mainLayout.addView(categorySpinner)
+
+        selectedCategoryLabel = TextView(this).apply {
+            textSize = 18f
+            setPadding(0, 30, 0, 20)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+        }
+        mainLayout.addView(selectedCategoryLabel)
+    }
+
+    private fun setupDateRangeFilter(mainLayout: LinearLayout) {
+        val dateLabel = TextView(this).apply {
+            text = "Select Date Range:"
+            textSize = 20f
+            setPadding(0, 20, 0, 10)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+            setTextColor(Color.parseColor("#f3c34e"))
+        }
+        mainLayout.addView(dateLabel)
+
+        startDateEditText = TextView(this).apply {
+            text = "Start Date"
+            setPadding(0, 10, 0, 20)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+            setOnClickListener { showDatePickerDialog(true) }
+            setTextColor(Color.parseColor("#f3c34e"))
+        }
+        mainLayout.addView(startDateEditText)
+
+        endDateEditText = TextView(this).apply {
+            text = "End Date"
+            setPadding(0, 10, 0, 20)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+            setOnClickListener { showDatePickerDialog(false) }
+            setTextColor(Color.parseColor("#f3c34e"))
+        }
+        mainLayout.addView(endDateEditText)
+    }
+
+    private fun setupFilterButton(mainLayout: LinearLayout) {
+        filterButton = Button(this).apply {
+            text = "Apply Date Filter"
+            setPadding(0, 20, 0, 20)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+            setTextColor(Color.parseColor("#f3c34e"))
+        }
+        mainLayout.addView(filterButton)
+
+        filterButton.setOnClickListener {
+            val selectedCategory = categorySpinner.selectedItem as? Category
+
+            if (startDate == null) {
+                showToast("Please select a start date.")
+                return@setOnClickListener
+            }
+            if (endDate == null) {
+                showToast("Please select an end date.")
+                return@setOnClickListener
+            }
+
+            if (selectedCategory != null) {
+                loadExpenses(selectedCategory.id)
+            }
+        }
+    }
+
+    private fun setupTotalAmountView(mainLayout: LinearLayout) {
+        totalAmountTextView = TextView(this).apply {
+            text = "Total Amount: 0"
+            textSize = 18f
+            setPadding(0, 20, 0, 20)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+            setTextColor(Color.parseColor("#f3c34e"))
+        }
+        mainLayout.addView(totalAmountTextView)
+    }
+
+    private fun setupExpensesScrollView(mainLayout: LinearLayout) {
+        expensesLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(40, 40, 40, 40)
+            setBackgroundColor(Color.parseColor("#8B5E3C"))
+        }
+
+        val scrollView = ScrollView(this).apply {
+            addView(expensesLayout)
+        }
+
+        mainLayout.addView(scrollView)
+    }
+
+    private fun showDatePickerDialog(isStartDate: Boolean) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, selectedYear, selectedMonth, selectedDayOfMonth ->
+                val formatted = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDayOfMonth)
+                val parsedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(formatted)
+
+                if (isStartDate) {
+                    startDate = parsedDate
+                    startDateEditText.text = "Start Date: $formatted"
+                } else {
+                    endDate = parsedDate
+                    endDateEditText.text = "End Date: $formatted"
+                }
+            },
+            year, month, day
+        )
+        datePickerDialog.show()
+    }
+
+    private fun loadCategories() {
+        lifecycleScope.launch {
+            try {
+                // Get categories from database (now returns Flow<List<Category>>)
+                val categoryList = db.categoryDao().getAllCategories().firstOrNull() ?: emptyList()
+                categories = categoryList
+                withContext(Dispatchers.Main) {
+                    val adapter = object : ArrayAdapter<Category>(
+                        this@ViewExpensesActivity,
+                        android.R.layout.simple_spinner_item,
+                        categories
+                    ) {
+                        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                            val view = super.getView(position, convertView, parent)
+                            (view as TextView).setTextColor(Color.parseColor("#f3c34e"))
+                            return view
+                        }
+
+                        override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                            val view = super.getDropDownView(position, convertView, parent)
+                            (view as TextView).setTextColor(Color.parseColor("#f3c34e"))
+                            return view
+                        }
+                    }
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    categorySpinner.adapter = adapter
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading categories: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@ViewExpensesActivity, "Error loading categories: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun loadExpenses(categoryId: Int) {
+        // First show loading indicator with pixel-retro theme styling
+        runOnUiThread {
+            expensesLayout.removeAllViews()
+            val loadingText = TextView(this).apply {
+                text = "LOADING EXPENSES..."
+                textSize = 20f
+                setPadding(20, 20, 20, 20)
+                setTextColor(Color.parseColor("#f3c34e")) // Gold color for pixel-retro theme
+                try {
+                    typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error setting typeface: ${e.message}")
+                }
+            }
+            expensesLayout.addView(loadingText)
+        }
+
+        lifecycleScope.launch {
+            try {
+                Log.d(TAG, "Loading expenses for category ID: $categoryId")
+
+                // Apply date filtering if both dates are set
+                val dateFilterApplied = startDate != null && endDate != null
+
+                // First try to get data from Room database
+                var expenses = emptyList<Expense>()
+                var roomSuccess = false
+
+                try {
+                    // Get expenses from database
+                    val expenseList = db.expenseDao().getExpensesByCategory(categoryId)
+
+                    if (dateFilterApplied && startDate != null && endDate != null) {
+                        val startTimestamp = startDate!!.time
+                        val endTimestamp = endDate!!.time
+
+                        // Filter by date range using timestamps
+                        expenses = expenseList.filter { expense ->
+                            expense.date >= startTimestamp && expense.date <= endTimestamp
+                        }
+                    } else {
+                        // Use all expenses for the category
+                        expenses = expenseList
+                    }
+
+                    roomSuccess = expenses.isNotEmpty()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error loading expenses from Room: ${e.message}")
+                }
+
+                // If Room database is empty or failed, try Firebase
+                if (!roomSuccess || expenses.isEmpty()) {
+                    try {
+                        // Create a Firebase service with proper error handling
+                        val firebaseService = FirebaseService.getInstance()
+
+                        // Safe handling of date filtering
+                        if (dateFilterApplied && startDate != null && endDate != null) {
+                            // Use Firebase service to get expenses filtered by date range
+                            val startTimestamp = startDate!!.time
+                            val endTimestamp = endDate!!.time
+                            expenses = firebaseService.fetchExpensesByCategoryAndDateRange(categoryId, startTimestamp, endTimestamp)
+                        } else {
+                            expenses = firebaseService.fetchExpensesByCategory(categoryId)
+                        }
+
+                        Log.d(TAG, "Loaded ${expenses.size} expenses from Firebase")
+
+                        // Save Firebase expenses to local database for future use
+                        if (expenses.isNotEmpty()) {
+                            try {
+                                // Process each expense individually instead of using transaction
+                                expenses.forEach { expense ->
+                                    try {
+                                        // Insert expense into database
+                                        val result = db.expenseDao().insertExpense(expense)
+                                        if (result > 0) {
+                                            Log.d(TAG, "Successfully inserted expense with ID: $result")
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e(TAG, "Error inserting expense: ${e.message}")
+                                    }
+                                }
+
+                                Log.d(TAG, "Successfully saved ${expenses.size} expenses to local database")
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error processing Firebase expenses: ${e.message}")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error in Firebase flow: ${e.message}")
+                    }
+                }
+
+                // Update UI with safely processed expenses
+                withContext(Dispatchers.Main) {
+                    try {
+                        expensesLayout.removeAllViews()
+                        var totalAmount = 0.0
+
+                        if (expenses.isEmpty()) {
+                            val emptyText = TextView(this@ViewExpensesActivity).apply {
+                                text = "NO EXPENSES FOUND"
+                                textSize = 20f
+                                setPadding(20, 20, 20, 20)
+                                setTextColor(Color.parseColor("#f3c34e")) // Gold color
+                                try {
+                                    typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Error setting typeface: ${e.message}")
+                                }
+                            }
+                            expensesLayout.addView(emptyText)
+                            totalAmountTextView.text = "TOTAL AMOUNT: $0.00"
+                        } else {
+                            // Add header with pixel styling
+                            val headerText = TextView(this@ViewExpensesActivity).apply {
+                                text = "YOUR EXPENSES"
+                                textSize = 22f
+                                setPadding(20, 20, 20, 30)
+                                setTextColor(Color.parseColor("#f3c34e")) // Gold color
+                                try {
+                                    typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Error setting typeface: ${e.message}")
+                                }
+                            }
+                            expensesLayout.addView(headerText)
+
+                            // Process each expense safely
+                            expenses.forEach { expense ->
+                                try {
+                                    val expenseView = createExpenseView(expense)
+                                    expensesLayout.addView(expenseView)
+                                    totalAmount += expense.amount
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Error creating expense view: ${e.message}")
+                                }
+                            }
+
+                            totalAmountTextView.text = "TOTAL AMOUNT: $${String.format("%.2f", totalAmount)}"
+
+                            // Apply pixel-retro styling to total amount
+                            try {
+                                totalAmountTextView.typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error setting typeface: ${e.message}")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "UI update error: ${e.message}")
+                        showErrorState("Error displaying expenses")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error in loadExpenses: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    showErrorState("Error loading expenses: ${e.message}")
+                }
+            }
+        }
+    }
+
+    // FIXED: Complete showErrorState function with proper structure
+    private fun showErrorState(errorMessage: String) {
+        try {
+            expensesLayout.removeAllViews()
+
+            // Create pixel-styled error image/icon
+            val errorIcon = ImageView(this).apply {
+                setImageResource(R.drawable.pixel_error)
+                setPadding(20, 20, 20, 20)
+            }
+            expensesLayout.addView(errorIcon)
+
+            // Add error message text
+            val errorText = TextView(this).apply {
+                text = errorMessage
+                textSize = 20f
+                setPadding(20, 20, 20, 20)
+                setTextColor(Color.parseColor("#f3c34e")) // Gold color
+                try {
+                    typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error setting typeface: ${e.message}")
+                }
+            }
+            expensesLayout.addView(errorText)
+
+            // FIXED: Complete retry button implementation
+            val retryButton = Button(this).apply {
+                text = "RETRY"
+                setPadding(40, 20, 40, 20)
+
+                // Use a simple background color instead of a resource
+                val buttonBg = GradientDrawable()
+                buttonBg.setColor(Color.parseColor("#5b3f2c"))
+                buttonBg.cornerRadius = 8f
+                background = buttonBg
+                setTextColor(Color.parseColor("#f3c34e")) // Gold text
+                try {
+                    typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error setting typeface: ${e.message}")
+                }
+                setOnClickListener {
+                    val selectedCategory = categorySpinner.selectedItem as? Category
+                    if (selectedCategory != null) {
+                        loadExpenses(selectedCategory.id)
+                    }
+                }
+
+                // Center the button
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = android.view.Gravity.CENTER
+                    setMargins(0, 30, 0, 0)
+                }
+            }
+            expensesLayout.addView(retryButton)
+
+            // Simple toast without custom styling (modern Android versions don't support view customization)
+            Toast.makeText(this, errorMessage.uppercase(), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in showErrorState: ${e.message}")
+            Toast.makeText(this, "FATAL ERROR DISPLAYING EXPENSES", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun createExpenseView(expense: Expense): View {
+        // Create a container with pixel-retro styling
+        val expenseView = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(20, 20, 20, 20)
+            // Use a simple border instead of potentially missing resource
+            val border = GradientDrawable()
+            border.setColor(Color.parseColor("#f3c34e"))
+            border.setStroke(4, Color.parseColor("#5b3f2c"))
+            background = border
+            setBackgroundColor(Color.parseColor("#f3c34e")) // Using pixel-retro gold color
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(0, 16, 0, 16)
+            }
+        }
+
+        // Header with expense title/description in pixel style
+        val headerText = TextView(this).apply {
+            // Safe call for nullable description
+            text = expense.description?.uppercase() ?: "EXPENSE"
+            textSize = 20f
+            setPadding(0, 0, 0, 10)
+            setTextColor(Color.parseColor("#5b3f2c")) // Brown color
+            try {
+                typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error setting typeface: ${e.message}")
+            }
+        }
+        expenseView.addView(headerText)
+
+        // Add a pixel divider
+        val divider = View(this).apply {
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 4)
+            setBackgroundColor(Color.parseColor("#5b3f2c"))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                4
+            ).apply {
+                setMargins(0, 4, 0, 12)
+            }
+        }
+        expenseView.addView(divider)
+
+        // Amount with pixel styling and icon
+        val amountLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER_VERTICAL
+        }
+
+        val coinIcon = ImageView(this).apply {
+            // Use a TextView with a $ symbol instead of an image
+            visibility = View.GONE
+            layoutParams = LinearLayout.LayoutParams(40, 40).apply {
+                setMargins(0, 0, 10, 0) // Using setMargins instead of marginEnd for compatibility
+            }
+        }
+        amountLayout.addView(coinIcon)
+
+        val amountTextView = TextView(this).apply {
+            text = "$${String.format("%.2f", expense.amount)}"
+            textSize = 18f
+            setTextColor(Color.parseColor("#5b3f2c"))
+            try {
+                typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error setting typeface: ${e.message}")
+            }
+        }
+        amountLayout.addView(amountTextView)
+        expenseView.addView(amountLayout)
+
+        // Date with pixel styling and calendar icon
+        val dateLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER_VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = 12
+            }
+        }
+
+        val calendarIcon = ImageView(this).apply {
+            // Use an emoji or text instead of potentially missing bill_clock resource
+            visibility = View.GONE
+            layoutParams = LinearLayout.LayoutParams(40, 40).apply {
+                setMargins(0, 0, 10, 0) // Using setMargins instead of marginEnd for compatibility
+            }
+        }
+        dateLayout.addView(calendarIcon)
+
+        val dateTextView = TextView(this).apply {
+            // Convert Long timestamp to Date for formatting
+            val date = Date(expense.date)
+            text = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+            textSize = 16f
+            setTextColor(Color.parseColor("#5b3f2c"))
+            try {
+                typeface = ResourcesCompat.getFont(this@ViewExpensesActivity, R.font.pixel_game)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error setting typeface: ${e.message}")
+            }
+        }
+        dateLayout.addView(dateTextView)
+        expenseView.addView(dateLayout)
+
+        // Add tap animation/effect to the expense view
+        expenseView.setOnClickListener {
+            // Create animated effect when tapped
+            expenseView.alpha = 0.7f
+            expenseView.postDelayed({
+                expenseView.alpha = 1.0f
+            }, 200)
+
+            // Show expense details (optional future implementation)
+            // showExpenseDetails(expense)
+        }
+
+        return expenseView
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+}

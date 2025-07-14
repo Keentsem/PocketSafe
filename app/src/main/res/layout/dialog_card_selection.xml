@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/pixel_dialog_background">
+
+    <!-- Dialog Title -->
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Payment Card"
+        android:textSize="18sp"
+        android:textColor="#5b3f2c"
+        android:fontFamily="@font/pixel_game"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Cards RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:maxHeight="300dp" />
+
+    <!-- Empty State -->
+    <LinearLayout
+        android:id="@+id/emptyStateView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/banking"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No cards available"
+            android:textColor="#5b3f2c"
+            android:fontFamily="@font/pixel_game"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add cards in Banking section"
+            android:textColor="#8b6f5c"
+            android:fontFamily="@font/pixel_game"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textColor="#5b3f2c"
+            android:fontFamily="@font/pixel_game"
+            android:backgroundTint="#d4af37"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnAddCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add New Card"
+            android:textColor="#5b3f2c"
+            android:fontFamily="@font/pixel_game"
+            android:backgroundTint="#f3c34e" />
+
+    </LinearLayout>
+
+</LinearLayout>

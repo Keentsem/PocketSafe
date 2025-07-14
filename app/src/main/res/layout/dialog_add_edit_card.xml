@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Dialog title with pixel-retro styling -->
+    <TextView
+        android:id="@+id/tvDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/pixel_game"
+        android:text="Add New Card"
+        android:textAlignment="center"
+        android:textColor="@color/primary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Card name input -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Card Name"
+        android:textColor="@color/primary"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etCardName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/pixel_edit_text_bg"
+        android:fontFamily="@font/pixel_game"
+        android:hint="e.g. Main Debit Card"
+        android:inputType="text"
+        android:padding="12dp"
+        android:textColor="@color/secondary"
+        android:textColorHint="#80f3c34e" />
+
+    <!-- Card number input -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Card Number (Last 4 digits)"
+        android:textColor="@color/primary"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etCardNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/pixel_edit_text_bg"
+        android:fontFamily="@font/pixel_game"
+        android:hint="1234"
+        android:inputType="number"
+        android:maxLength="4"
+        android:padding="12dp"
+        android:textColor="@color/secondary"
+        android:textColorHint="#80f3c34e" />
+
+    <!-- Card type selection -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Card Type"
+        android:textColor="@color/primary"
+        android:textSize="14sp" />
+
+    <RadioGroup
+        android:id="@+id/rgCardType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rbVisa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:buttonTint="@color/primary"
+            android:checked="true"
+            android:fontFamily="@font/pixel_game"
+            android:text="Visa"
+            android:textColor="@color/primary" />
+
+        <RadioButton
+            android:id="@+id/rbMastercard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:buttonTint="@color/primary"
+            android:fontFamily="@font/pixel_game"
+            android:text="Mastercard"
+            android:textColor="@color/primary" />
+
+        <RadioButton
+            android:id="@+id/rbOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/primary"
+            android:fontFamily="@font/pixel_game"
+            android:text="Other"
+            android:textColor="@color/primary" />
+    </RadioGroup>
+
+    <!-- Monthly spending limit input -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Monthly Spending Limit ($)"
+        android:textColor="@color/primary"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etMonthlyLimit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/pixel_edit_text_bg"
+        android:fontFamily="@font/pixel_game"
+        android:hint="1000.00"
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:textColor="@color/secondary"
+        android:textColorHint="#80f3c34e" />
+
+    <!-- Current spending input (only visible in edit mode) -->
+    <TextView
+        android:id="@+id/tvCurrentSpendingLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Current Spending ($)"
+        android:textColor="@color/primary"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/etCurrentSpending"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/pixel_edit_text_bg"
+        android:fontFamily="@font/pixel_game"
+        android:hint="0.00"
+        android:inputType="numberDecimal"
+        android:padding="12dp"
+        android:textColor="@color/secondary"
+        android:textColorHint="#80f3c34e"
+        android:visibility="gone" />
+
+    <!-- Card color selection -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/pixel_game"
+        android:text="Card Color"
+        android:textColor="@color/primary"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <!-- Gold (default) -->
+        <View
+            android:id="@+id/colorGold"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="#f3c34e"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Brown -->
+        <View
+            android:id="@+id/colorBrown"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="#5b3f2c"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Blue -->
+        <View
+            android:id="@+id/colorBlue"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="#4285F4"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Green -->
+        <View
+            android:id="@+id/colorGreen"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:background="#34A853"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Red -->
+        <View
+            android:id="@+id/colorRed"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="#EA4335"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- Active status toggle (only visible in edit mode) -->
+    <LinearLayout
+        android:id="@+id/activeToggleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/pixel_game"
+            android:text="Card Active"
+            android:textColor="@color/primary"
+            android:textSize="14sp" />
+
+        <Switch
+            android:id="@+id/switchActive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:thumbTint="@color/primary"
+            android:trackTint="@color/secondary" />
+    </LinearLayout>
+
+    <!-- Action buttons with pixel-retro styling -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@color/secondary"
+            android:fontFamily="@font/pixel_game"
+            android:text="Cancel"
+            android:textColor="@color/primary" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@color/primary"
+            android:fontFamily="@font/pixel_game"
+            android:text="Save"
+            android:textColor="@color/secondary" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Required for Android 13+ to post notifications -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <application
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PocketSafe"
+        tools:targetApi="31">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- Disable default WorkManager initialization since we implement Configuration.Provider -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <!-- WELCOME ACTIVITY (Main Launcher) -->
+        <activity
+            android:name=".ui.activity.WelcomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- LOGIN ACTIVITY with pixel-retro theme -->
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.PocketSafe">
+        </activity>
+
+        <!-- REGISTER ACTIVITY -->
+        <activity
+            android:name=".ui.auth.RegisterActivity"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <!-- MAIN MENU ACTIVITY -->
+        <activity 
+            android:name=".ui.MainMenu"
+            android:exported="true"/>
+
+        <!-- CATEGORY ACTIVITY -->
+        <activity android:name=".ui.CategoryActivity"/>
+
+        <!-- SETUP ACTIVITY -->
+        <activity android:name=".ui.SetupActivity"/>
+
+        <!-- USER LIST ACTIVITY -->
+        <activity android:name=".ui.UserListActivity"/>
+
+        <!-- EXPENSE ENTRY ACTIVITY -->
+        <activity
+            android:name=".ui.expense.ExpenseEntryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- BANKING ACTIVITY -->
+        <activity
+            android:name=".ui.activity.BankingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- MY POCKET ACTIVITY -->
+        <activity
+            android:name=".ui.MyPocketActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- SUBSCRIPTION LIST ACTIVITY -->
+        <activity
+            android:name=".ui.activity.SubscriptionListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+            
+        <!-- SUBSCRIPTION DETAIL ACTIVITY -->
+        <activity
+            android:name=".ui.activity.SubscriptionDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- BILL REMINDER LIST ACTIVITY -->
+        <activity
+            android:name=".ui.activity.BillReminderListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- BILL REMINDER DETAIL ACTIVITY -->
+        <activity
+            android:name=".ui.activity.BillReminderDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- BILL SPLIT ACTIVITY -->
+        <activity
+            android:name=".ui.activity.BillSplitActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- ANALYTICS ACTIVITY -->
+        <activity
+            android:name=".ui.activity.AnalyticsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+
+        <!-- MAIN ACTIVITY -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe" />
+            
+        <!-- NAVIGATION ACTIVITY - Compose Navigation with pixel-retro theme -->
+        <activity
+            android:name=".NavigationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PocketSafe.NoActionBar" />
+
+    </application>
+
+</manifest>

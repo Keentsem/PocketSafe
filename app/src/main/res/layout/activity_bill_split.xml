@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#5b3f2c">
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigation">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            
+            <!-- Header -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MY POCKET SPLITTER"
+                android:textColor="#f3c34e"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="24sp"
+                android:gravity="center"
+                android:layout_marginBottom="8dp"/>
+                
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Split bills with friends and family!"
+                android:textColor="#f3c34e"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginBottom="24dp"/>
+            
+            <!-- Occasion Input -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OCCASION"
+                android:textColor="#f3c34e"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="12sp"/>
+                
+            <EditText
+                android:id="@+id/occasionInput"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="e.g., Braai at John's, Restaurant outing"
+                android:background="@drawable/pixel_input_background"
+                android:padding="12dp"
+                android:textColor="#f3c34e"
+                android:textColorHint="#8b6914"
+                android:fontFamily="@font/pixel_game"
+                android:layout_marginBottom="16dp"/>
+            
+            <!-- Add Member Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="#3e2a1a">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ADD MEMBER"
+                        android:textColor="#f3c34e"
+                        android:fontFamily="@font/pixel_game"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp"/>
+                    
+                    <EditText
+                        android:id="@+id/memberNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="Member name"
+                        android:background="@drawable/pixel_input_background"
+                        android:padding="12dp"
+                        android:textColor="#f3c34e"
+                        android:textColorHint="#8b6914"
+                        android:fontFamily="@font/pixel_game"
+                        android:layout_marginBottom="8dp"/>
+                    
+                    <EditText
+                        android:id="@+id/memberAmountInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:hint="Amount paid (R)"
+                        android:inputType="numberDecimal"
+                        android:background="@drawable/pixel_input_background"
+                        android:padding="12dp"
+                        android:textColor="#f3c34e"
+                        android:textColorHint="#8b6914"
+                        android:fontFamily="@font/pixel_game"
+                        android:layout_marginBottom="12dp"/>
+                    
+                    <Button
+                        android:id="@+id/addMemberButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="ADD MEMBER"
+                        android:background="@drawable/pixel_button_primary"
+                        android:textColor="#5b3f2c"
+                        android:fontFamily="@font/pixel_game"/>
+                        
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            
+            <!-- Members List -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MEMBERS"
+                android:textColor="#f3c34e"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"/>
+                
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/membersRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp"/>
+            
+            <!-- Total -->
+            <TextView
+                android:id="@+id/totalAmountText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total: R0.00"
+                android:textColor="#f3c34e"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="20sp"
+                android:gravity="end"
+                android:layout_marginBottom="16dp"/>
+            
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/saveSplitButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="SAVE SPLIT &amp; GENERATE RECEIPT"
+                android:background="@drawable/pixel_button_primary"
+                android:textColor="#5b3f2c"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"/>
+            
+            <!-- Share Code Display -->
+            <TextView
+                android:id="@+id/shareCodeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#f3c34e"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginBottom="24dp"/>
+            
+            <!-- Download Section -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#f3c34e"
+                android:layout_marginVertical="16dp"/>
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DOWNLOAD RECEIPT BY CODE"
+                android:textColor="#f3c34e"
+                android:fontFamily="@font/pixel_game"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
+                
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                
+                <EditText
+                    android:id="@+id/downloadCodeInput"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:hint="Enter share code"
+                    android:background="@drawable/pixel_input_background"
+                    android:padding="12dp"
+                    android:textColor="#f3c34e"
+                    android:textColorHint="#8b6914"
+                    android:fontFamily="@font/pixel_game"
+                    android:layout_marginEnd="8dp"/>
+                
+                <Button
+                    android:id="@+id/downloadReceiptButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="DOWNLOAD"
+                    android:background="@drawable/pixel_button_secondary"
+                    android:textColor="#f3c34e"
+                    android:fontFamily="@font/pixel_game"
+                    android:paddingHorizontal="16dp"/>
+                    
+            </LinearLayout>
+            
+        </LinearLayout>
+    </ScrollView>
+    
+    <!-- Bottom Navigation -->
+    <include
+        android:id="@+id/bottomNavigation"
+        layout="@layout/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
+        
+</RelativeLayout>

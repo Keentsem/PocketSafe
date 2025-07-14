@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MyPocketSplit"
+        android:textColor="#f3c34e"
+        android:textSize="20sp"
+        android:fontFamily="@font/pixel_game"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvBillTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Split this bill with others"
+        android:textColor="#5b3f2c"
+        android:textSize="14sp"
+        android:fontFamily="@font/pixel_game"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Amount"
+        android:textColor="#5b3f2c"
+        android:fontFamily="@font/pixel_game" />
+
+    <EditText
+        android:id="@+id/etTotalAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:textColor="#5b3f2c"
+        android:backgroundTint="#f3c34e"
+        android:fontFamily="@font/pixel_game"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Members"
+        android:textColor="#5b3f2c"
+        android:fontFamily="@font/pixel_game" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etMemberName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Name"
+            android:textColor="#5b3f2c"
+            android:backgroundTint="#f3c34e"
+            android:fontFamily="@font/pixel_game" />
+
+        <EditText
+            android:id="@+id/etMemberAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Amount"
+            android:inputType="numberDecimal"
+            android:textColor="#5b3f2c"
+            android:backgroundTint="#f3c34e"
+            android:fontFamily="@font/pixel_game"
+            android:layout_marginStart="8dp" />
+
+        <Button
+            android:id="@+id/btnAddMember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:textColor="#5b3f2c"
+            android:backgroundTint="#f3c34e"
+            android:fontFamily="@font/pixel_game"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMembers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvRemainingAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remaining: R0.00"
+        android:textColor="#5b3f2c"
+        android:fontFamily="@font/pixel_game"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnGenerateReceipt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generate Receipt"
+        android:textColor="#5b3f2c"
+        android:backgroundTint="#f3c34e"
+        android:fontFamily="@font/pixel_game" />
+</LinearLayout>

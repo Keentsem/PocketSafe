@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#511900"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Header Section -->
+        <TextView
+            android:id="@+id/tvAnalyticsTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Analytics Dashboard"
+            android:textColor="#f3c34e"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="@font/pixel_game"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Budget Status Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvBudgetStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#5b3f2c"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tvAnalyticsTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvBudgetStatusTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Budget Status"
+                    android:textColor="#f3c34e"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/pixel_game" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/imgBudgetStatusIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_money_circle"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvBudgetStatusText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Under Budget"
+                            android:textColor="#ffffff"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                        <TextView
+                            android:id="@+id/tvBudgetAmount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="R2,500 / R5,000"
+                            android:textColor="#f3c34e"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvBudgetPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50%"
+                        android:textColor="#f3c34e"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/pixel_game" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Spending Breakdown Chart -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvSpendingChart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#5b3f2c"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cvBudgetStatus"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/sprite_data_chart"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Spending Breakdown"
+                        android:textColor="#f3c34e"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/pixel_game" />
+
+                </LinearLayout>
+
+                <!-- Pie Chart Placeholder -->
+                <FrameLayout
+                    android:id="@+id/flPieChartContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="#3d2a16"
+                    android:layout_marginBottom="16dp">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp" />
+
+                </FrameLayout>
+
+                <!-- Category Legend -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCategoryLegend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- MySplit Analytics -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvMySplitAnalytics"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#5b3f2c"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cvSpendingChart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/collabhands"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="MySplit Analytics"
+                        android:textColor="#f3c34e"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/pixel_game" />
+
+                </LinearLayout>
+
+                <!-- MySplit Stats -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tvTotalSplitBills"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textColor="#f3c34e"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/pixel_game" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Split Bills"
+                            android:textColor="#ffffff"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tvTotalSplitAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="R1,450"
+                            android:textColor="#f3c34e"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/pixel_game" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Split"
+                            android:textColor="#ffffff"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tvAverageSplit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="R121"
+                            android:textColor="#f3c34e"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/pixel_game" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Avg Split"
+                            android:textColor="#ffffff"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Recent MySplit Activities -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recent MySplit Activities"
+                    android:textColor="#f3c34e"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/pixel_game" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMySplitActivities"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card Usage Analytics -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvCardUsage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#5b3f2c"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cvMySplitAnalytics"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Card Usage Analytics"
+                    android:textColor="#f3c34e"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/pixel_game" />
+
+                <!-- Card Usage Chart -->
+                <FrameLayout
+                    android:id="@+id/flCardUsageChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="#3d2a16"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Bar Chart Placeholder -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="bottom"
+                        android:padding="16dp">
+
+                        <!-- Sample bars for visualization -->
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:layout_weight="1"
+                            android:background="#f3c34e"
+                            android:layout_marginEnd="4dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="80dp"
+                            android:layout_weight="1"
+                            android:background="#f3c34e"
+                            android:layout_marginEnd="4dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:background="#f3c34e"
+                            android:layout_marginEnd="4dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="90dp"
+                            android:layout_weight="1"
+                            android:background="#f3c34e" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+                <!-- Card Usage List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCardUsage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- South African Context Section -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvSouthAfricanContext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#5b3f2c"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/cvCardUsage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="South African Spending Insights"
+                    android:textColor="#f3c34e"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/pixel_game" />
+
+                <!-- Common SA Categories -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Braai and Entertainment -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_entertainment"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Braai &amp; Entertainment"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                        <TextView
+                            android:id="@+id/tvBraaiAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="R450"
+                            android:textColor="#f3c34e"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                    </LinearLayout>
+
+                    <!-- Taxi and Transport -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_transport"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Taxi &amp; Transport"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                        <TextView
+                            android:id="@+id/tvTaxiAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="R320"
+                            android:textColor="#f3c34e"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                    </LinearLayout>
+
+                    <!-- Rent Shares -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_home"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Rent Shares"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                        <TextView
+                            android:id="@+id/tvRentAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="R1,200"
+                            android:textColor="#f3c34e"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/pixel_game" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Download Animation Container -->
+        <FrameLayout
+            android:id="@+id/flDownloadAnimation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/pixel_dialog_background"
+                android:padding="32dp">
+
+                <ImageView
+                    android:id="@+id/imgDownloadAnimation"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/receipt"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Receipt Downloaded!"
+                    android:textColor="#f3c34e"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/pixel_game" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MySplit receipt saved to Downloads"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:fontFamily="@font/pixel_game" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <!-- Navigation Bar -->
+        <include
+            android:id="@+id/navigationBar"
+            layout="@layout/navigation_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/cvSouthAfricanContext"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

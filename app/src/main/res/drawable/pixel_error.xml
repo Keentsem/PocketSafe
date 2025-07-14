@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Pixel-style error icon using gold and brown colors -->
+    <!-- Background circle with pixelated edges -->
+    <path
+        android:fillColor="#5b3f2c"
+        android:pathData="M8,12 L12,8 L36,8 L40,12 L40,36 L36,40 L12,40 L8,36 Z" />
+
+    <!-- Pixel X mark made of individual blocks in gold -->
+    <!-- First diagonal (top-left to bottom-right) -->
+    <path android:fillColor="#f3c34e" android:pathData="M16,16 h4 v4 h-4 z" />
+    <path android:fillColor="#f3c34e" android:pathData="M20,20 h4 v4 h-4 z" />
+    <path android:fillColor="#f3c34e" android:pathData="M24,24 h4 v4 h-4 z" />
+    <path android:fillColor="#f3c34e" android:pathData="M28,28 h4 v4 h-4 z" />
+    
+    <!-- Second diagonal (top-right to bottom-left) -->
+    <path android:fillColor="#f3c34e" android:pathData="M28,16 h4 v4 h-4 z" />
+    <path android:fillColor="#f3c34e" android:pathData="M24,20 h4 v4 h-4 z" />
+    <path android:fillColor="#f3c34e" android:pathData="M20,24 h4 v4 h-4 z" />
+    <path android:fillColor="#f3c34e" android:pathData="M16,28 h4 v4 h-4 z" />
+
+    <!-- Pixelated border outline -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M8,12 L12,8 L36,8 L40,12 L40,36 L36,40 L12,40 L8,36 Z"
+        android:strokeWidth="1"
+        android:strokeColor="#f3c34e" />
+</vector>
